@@ -9,8 +9,7 @@ import sttp.tapir.server.nima.Id
 import java.io.InputStream
 import scala.util.{Failure, Success, Try}
 
-private[nima] class NimaBodyListener(res: JavaNimaServerResponse) extends BodyListener[Id, InputStream] {
+private[nima] class NimaBodyListener(res: JavaNimaServerResponse) extends BodyListener[Id, InputStream]:
   override def onComplete(body: InputStream)(cb: Try[Unit] => Unit): InputStream =
     res.whenSent(() => cb(Success(())))
     body
-}

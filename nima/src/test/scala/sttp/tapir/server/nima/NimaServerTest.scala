@@ -7,7 +7,7 @@ import sttp.tapir.server.nima.internal.IdMonad
 import sttp.tapir.server.tests.*
 import sttp.tapir.tests.{Test, TestSuite}
 
-class NimaServerTest extends TestSuite with EitherValues {
+class NimaServerTest extends TestSuite with EitherValues:
   override def tests: Resource[IO, List[Test]] =
     backendResource.flatMap { backend =>
       Resource
@@ -19,4 +19,3 @@ class NimaServerTest extends TestSuite with EitherValues {
             new AllServerTests(createServerTest, interpreter, backend, basic = false, multipart = false).tests()
         })
     }
-}

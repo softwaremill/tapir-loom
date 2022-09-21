@@ -11,14 +11,14 @@ import sttp.tapir.server.nima.Id
 import java.nio.ByteBuffer
 import java.nio.file.{Files, StandardCopyOption}
 
-private[nima] class NimaRequestBody(createFile: ServerRequest => TapirFile) extends RequestBody[Id, NoStreams] {
+private[nima] class NimaRequestBody(createFile: ServerRequest => TapirFile) extends RequestBody[Id, NoStreams]:
   override val streams: capabilities.Streams[NoStreams] = NoStreams
 
-  override def toRaw[RAW](serverRequest: ServerRequest, bodyType: RawBodyType[RAW]): RawValue[RAW] = {
+  override def toRaw[RAW](serverRequest: ServerRequest, bodyType: RawBodyType[RAW]): RawValue[RAW] =
     def asInputStream = nimaRequest(serverRequest).content().inputStream()
     def asByteArray = asInputStream.readAllBytes()
 
-    bodyType match {
+    bodyType match
       case RawBodyType.StringBody(charset) => RawValue(new String(asByteArray, charset))
       case RawBodyType.ByteArrayBody       => RawValue(asByteArray)
       case RawBodyType.ByteBufferBody      => RawValue(ByteBuffer.wrap(asByteArray))
@@ -28,11 +28,8 @@ private[nima] class NimaRequestBody(createFile: ServerRequest => TapirFile) exte
         Files.copy(asInputStream, file.toPath, StandardCopyOption.REPLACE_EXISTING)
         RawValue(FileRange(file), Seq(FileRange(file)))
       case _: RawBodyType.MultipartBody => ???
-    }
-  }
 
   override def toStream(serverRequest: ServerRequest): streams.BinaryStream = throw new UnsupportedOperationException()
 
   private def nimaRequest(serverRequest: ServerRequest): JavaNimaServerRequest =
     serverRequest.underlying.asInstanceOf[JavaNimaServerRequest]
-}

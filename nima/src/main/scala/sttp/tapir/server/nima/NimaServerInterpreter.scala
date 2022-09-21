@@ -11,10 +11,10 @@ import sttp.tapir.server.nima.internal.{IdMonad, NimaBodyListener, NimaRequestBo
 
 import java.io.InputStream
 
-trait NimaServerInterpreter {
+trait NimaServerInterpreter:
   def nimaServerOptions: NimaServerOptions
 
-  def toHandler(ses: List[ServerEndpoint[Any, Id]]): Handler = {
+  def toHandler(ses: List[ServerEndpoint[Any, Id]]): Handler =
     val filteredEndpoints = FilterServerEndpoints[Any, Id](ses)
     val requestBody = new NimaRequestBody(nimaServerOptions.createFile)
     val responseBody = new NimaToResponseBody
@@ -45,13 +45,9 @@ trait NimaServerInterpreter {
 
         case RequestResult.Failure(_) => res.next()
     }
-  }
-}
+end NimaServerInterpreter
 
-object NimaServerInterpreter {
-  def apply(serverOptions: NimaServerOptions = NimaServerOptions.Default): NimaServerInterpreter = {
-    new NimaServerInterpreter {
+object NimaServerInterpreter:
+  def apply(serverOptions: NimaServerOptions = NimaServerOptions.Default): NimaServerInterpreter =
+    new NimaServerInterpreter:
       override def nimaServerOptions: NimaServerOptions = serverOptions
-    }
-  }
-}

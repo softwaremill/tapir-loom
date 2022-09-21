@@ -11,14 +11,13 @@ import sttp.tapir.tests.Port
 
 import java.net.InetSocketAddress
 
-class NimaTestServerInterpreter() extends TestServerInterpreter[Id, Any, NimaServerOptions, Handler] {
+class NimaTestServerInterpreter() extends TestServerInterpreter[Id, Any, NimaServerOptions, Handler]:
 
-  override def route(es: List[ServerEndpoint[Any, Id]], interceptors: Interceptors): Handler = {
+  override def route(es: List[ServerEndpoint[Any, Id]], interceptors: Interceptors): Handler =
     val serverOptions: NimaServerOptions = interceptors(NimaServerOptions.customiseInterceptors).options
     NimaServerInterpreter(serverOptions).toHandler(es)
-  }
 
-  override def server(routes: NonEmptyList[Handler]): Resource[IO, Port] = {
+  override def server(routes: NonEmptyList[Handler]): Resource[IO, Port] =
     val bind = IO.blocking {
       WebServer
         .builder()
@@ -31,5 +30,3 @@ class NimaTestServerInterpreter() extends TestServerInterpreter[Id, Any, NimaSer
     Resource
       .make(bind)(binding => IO.blocking(binding.stop()))
       .map(b => b.port)
-  }
-}

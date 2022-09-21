@@ -11,26 +11,24 @@ case class NimaServerOptions(
     interceptors: List[Interceptor[Id]],
     createFile: ServerRequest => TapirFile,
     deleteFile: TapirFile => Unit
-) {
+):
   def prependInterceptor(i: Interceptor[Id]): NimaServerOptions = copy(interceptors = i :: interceptors)
   def appendInterceptor(i: Interceptor[Id]): NimaServerOptions = copy(interceptors = interceptors :+ i)
-}
 
-object NimaServerOptions {
+object NimaServerOptions:
   val Default: NimaServerOptions = customiseInterceptors.options
 
   private def default(interceptors: List[Interceptor[Id]]): NimaServerOptions =
     NimaServerOptions(interceptors, _ => Defaults.createTempFile(), Defaults.deleteFile())
 
-  def customiseInterceptors: CustomiseInterceptors[Id, NimaServerOptions] = {
+  def customiseInterceptors: CustomiseInterceptors[Id, NimaServerOptions] =
     CustomiseInterceptors(
       createOptions = (ci: CustomiseInterceptors[Id, NimaServerOptions]) => default(ci.interceptors)
     ).serverLog(defaultServerLog)
-  }
 
   private val log = Logger.getLogger(classOf[NimaServerInterpreter].getName)
 
-  lazy val defaultServerLog: ServerLog[Id] = {
+  lazy val defaultServerLog: ServerLog[Id] =
     DefaultServerLog(
       doLogWhenReceived = debugLog(_, None),
       doLogWhenHandled = debugLog,
@@ -38,9 +36,8 @@ object NimaServerOptions {
       doLogExceptions = (msg: String, ex: Throwable) => log.log(Level.SEVERE, msg, ex),
       noLog = ()
     )
-  }
 
   private def debugLog(msg: String, exOpt: Option[Throwable]): Unit = exOpt match
     case Some(e) => log.log(Level.FINE, msg, e)
     case None    => log.log(Level.FINE, msg)
-}
+end NimaServerOptions
