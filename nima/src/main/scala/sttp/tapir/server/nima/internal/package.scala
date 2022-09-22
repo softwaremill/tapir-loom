@@ -1,12 +1,9 @@
-package sttp.tapir.server.netty
+package sttp.tapir.server.nima
 
 import sttp.monad.MonadError
 
-package object loom {
-  type Id[X] = X
-  type IdRoute = Route[Id]
-
-  private[loom] implicit val idMonad: MonadError[Id] = new MonadError[Id] {
+package object internal {
+  private[nima] implicit val idMonad: MonadError[Id] = new MonadError[Id] {
     override def unit[T](t: T): Id[T] = t
     override def map[T, T2](fa: Id[T])(f: T => T2): Id[T2] = f(fa)
     override def flatMap[T, T2](fa: Id[T])(f: T => Id[T2]): Id[T2] = f(fa)

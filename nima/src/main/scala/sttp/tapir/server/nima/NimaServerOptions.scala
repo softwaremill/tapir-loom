@@ -11,11 +11,12 @@ case class NimaServerOptions(
     interceptors: List[Interceptor[Id]],
     createFile: ServerRequest => TapirFile,
     deleteFile: TapirFile => Unit
-):
+) {
   def prependInterceptor(i: Interceptor[Id]): NimaServerOptions = copy(interceptors = i :: interceptors)
   def appendInterceptor(i: Interceptor[Id]): NimaServerOptions = copy(interceptors = interceptors :+ i)
+}
 
-object NimaServerOptions:
+object NimaServerOptions {
   val Default: NimaServerOptions = customiseInterceptors.options
 
   private def default(interceptors: List[Interceptor[Id]]): NimaServerOptions =
@@ -29,7 +30,7 @@ object NimaServerOptions:
   private val log = Logger.getLogger(classOf[NimaServerInterpreter].getName)
 
   lazy val defaultServerLog: ServerLog[Id] =
-    DefaultServerLog(
+    DefaultServerLog[Id](
       doLogWhenReceived = debugLog(_, None),
       doLogWhenHandled = debugLog,
       doLogAllDecodeFailures = debugLog,
@@ -37,7 +38,8 @@ object NimaServerOptions:
       noLog = ()
     )
 
-  private def debugLog(msg: String, exOpt: Option[Throwable]): Unit = exOpt match
+  private def debugLog(msg: String, exOpt: Option[Throwable]): Unit = exOpt match {
     case Some(e) => log.log(Level.FINE, msg, e)
     case None    => log.log(Level.FINE, msg)
-end NimaServerOptions
+  }
+}

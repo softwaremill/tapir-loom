@@ -50,7 +50,7 @@ object NettyIdServerOptions {
   private val log = Logger[NettyIdServerInterpreter]
 
   lazy val defaultServerLog: ServerLog[Id] = {
-    DefaultServerLog(
+    DefaultServerLog[Id](
       doLogWhenReceived = debugLog(_, None),
       doLogWhenHandled = debugLog,
       doLogAllDecodeFailures = debugLog,

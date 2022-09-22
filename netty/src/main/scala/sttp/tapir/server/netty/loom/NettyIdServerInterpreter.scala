@@ -1,7 +1,6 @@
 package sttp.tapir.server.netty.loom
 
 import sttp.tapir.server.ServerEndpoint
-import sttp.tapir.server.netty.Route
 import sttp.tapir.server.netty.internal.NettyServerInterpreter
 
 trait NettyIdServerInterpreter {
@@ -10,7 +9,7 @@ trait NettyIdServerInterpreter {
   def toRoute(
       ses: List[ServerEndpoint[Any, Id]]
   ): IdRoute = {
-    NettyServerInterpreter.toRoute(ses, nettyServerOptions.interceptors, nettyServerOptions.createFile, nettyServerOptions.deleteFile)
+    NettyServerInterpreter.toRoute[Id](ses, nettyServerOptions.interceptors, nettyServerOptions.createFile, nettyServerOptions.deleteFile)
   }
 }
 

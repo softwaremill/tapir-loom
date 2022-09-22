@@ -1,11 +1,9 @@
 package sttp.tapir.server.netty.loom
 
-import io.netty.channel.*
+import io.netty.channel.{Channel, EventLoopGroup}
 import io.netty.channel.unix.DomainSocketAddress
-import sttp.monad.MonadError
 import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.server.netty.Route
-import sttp.tapir.server.netty.internal.FutureUtil.*
 import sttp.tapir.server.netty.internal.{NettyBootstrap, NettyServerHandler}
 
 import java.net.{InetSocketAddress, SocketAddress}
@@ -51,7 +49,7 @@ case class NettyIdServer[SA <: SocketAddress](routes: Vector[IdRoute], options: 
       options.nettyOptions,
       new NettyServerHandler(
         route,
-        (f: () => Unit) => {
+        (f: () => Id[Unit]) => {
           executor.submit(new Runnable {
             override def run(): Unit = f()
           })
@@ -72,7 +70,7 @@ case class NettyIdServer[SA <: SocketAddress](routes: Vector[IdRoute], options: 
   private def stop(ch: Channel, eventLoopGroup: EventLoopGroup): Unit = {
     ch.close().get()
     if (options.nettyOptions.shutdownEventLoopGroupOnClose) {
-      eventLoopGroup.shutdownGracefully().get()
+      val _ = eventLoopGroup.shutdownGracefully().get()
     }
   }
 }

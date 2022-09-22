@@ -1,33 +1,44 @@
 import com.softwaremill.SbtSoftwareMillCommon.commonSmlBuildSettings
+import com.softwaremill.Publish.ossPublishSettings
 
-lazy val commonSettings = commonSmlBuildSettings ++ Seq(
-  organization := "com.softwaremill.tapir.loom",
-  scalaVersion := "3.2.0"
+val scala2_13 = "2.13.8"
+val scala2 = List(scala2_13)
+val scala3 = List("3.2.0")
+val scalaAll = scala2 ++ scala3
+
+excludeLintKeys in Global ++= Set(ideSkipProject)
+
+lazy val commonSettings = commonSmlBuildSettings ++ ossPublishSettings ++ Seq(
+  organization := "com.softwaremill.tapir",
+  ideSkipProject := (scalaVersion.value != scala2_13),
+  javaOptions += "--enable-preview",
+  fork := true
 )
 
-val tapirVersion = "1.1.0+62-76cd3353+20220922-1226-SNAPSHOT"
-val scalaTest = "org.scalatest" %% "scalatest" % "3.2.12" % Test
+val tapirVersion = "1.1.1"
+val scalaTest = "org.scalatest" %% "scalatest" % "3.2.13" % Test
 
 lazy val rootProject = (project in file("."))
   .settings(commonSettings: _*)
-  .settings(publishArtifact := false, name := "tapir-loom")
-  .aggregate(netty, nima)
+  .settings(publishArtifact := false, name := "tapir-loom", scalaVersion := scala2_13)
+  .aggregate(netty.projectRefs ++ nima.projectRefs: _*)
 
-lazy val netty: Project = (project in file("netty"))
+lazy val netty = (projectMatrix in file("netty"))
   .settings(commonSettings: _*)
   .settings(
-    name := "netty",
+    name := "tapir-netty-server-id",
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.tapir" %% "tapir-netty-server" % tapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-server-tests" % tapirVersion % Test,
       scalaTest
     )
   )
+  .jvmPlatform(scalaVersions = scalaAll)
 
-lazy val nima: Project = (project in file("nima"))
+lazy val nima = (projectMatrix in file("nima"))
   .settings(commonSettings: _*)
   .settings(
-    name := "nima",
+    name := "tapir-nima-server",
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.tapir" %% "tapir-server" % tapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-server-tests" % tapirVersion % Test,
@@ -35,3 +46,4 @@ lazy val nima: Project = (project in file("nima"))
       scalaTest
     )
   )
+  .jvmPlatform(scalaVersions = scalaAll)
