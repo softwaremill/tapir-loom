@@ -5,7 +5,7 @@ lazy val commonSettings = commonSmlBuildSettings ++ Seq(
   scalaVersion := "3.2.0"
 )
 
-val tapirVersion = "1.1.0"
+val tapirVersion = "1.1.0+62-76cd3353+20220922-1226-SNAPSHOT"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.2.12" % Test
 
 lazy val rootProject = (project in file("."))
@@ -19,6 +19,7 @@ lazy val netty: Project = (project in file("netty"))
     name := "netty",
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.tapir" %% "tapir-netty-server" % tapirVersion,
+      "com.softwaremill.sttp.tapir" %% "tapir-server-tests" % tapirVersion % Test,
       scalaTest
     )
   )
