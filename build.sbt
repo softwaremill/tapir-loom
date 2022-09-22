@@ -9,7 +9,7 @@ val scalaAll = scala2 ++ scala3
 excludeLintKeys in Global ++= Set(ideSkipProject)
 
 lazy val commonSettings = commonSmlBuildSettings ++ ossPublishSettings ++ Seq(
-  organization := "com.softwaremill.tapir",
+  organization := "com.softwaremill.sttp.tapir",
   ideSkipProject := (scalaVersion.value != scala2_13),
   javaOptions += "--enable-preview",
   fork := true
