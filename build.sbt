@@ -42,7 +42,7 @@ lazy val nima = (projectMatrix in file("nima"))
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.tapir" %% "tapir-server" % tapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-server-tests" % tapirVersion % Test,
-      "io.helidon.nima.webserver" % "helidon-nima-webserver" % "4.0.0-ALPHA1",
+      "io.helidon.nima.webserver" % "helidon-nima-webserver" % "4.0.0-ALPHA2",
       scalaTest
     )
   )
