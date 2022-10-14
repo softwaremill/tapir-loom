@@ -1,7 +1,7 @@
 import com.softwaremill.SbtSoftwareMillCommon.commonSmlBuildSettings
 import com.softwaremill.Publish.ossPublishSettings
 
-val scala2_13 = "2.13.8"
+val scala2_13 = "2.13.10"
 val scala2 = List(scala2_13)
 val scala3 = List("3.2.0")
 val scalaAll = scala2 ++ scala3
