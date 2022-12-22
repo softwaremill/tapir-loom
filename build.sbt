@@ -1,9 +1,9 @@
 import com.softwaremill.SbtSoftwareMillCommon.commonSmlBuildSettings
 import com.softwaremill.Publish.ossPublishSettings
 
-val scala2_13 = "2.13.8"
+val scala2_13 = "2.13.10"
 val scala2 = List(scala2_13)
-val scala3 = List("3.2.0")
+val scala3 = List("3.2.1")
 val scalaAll = scala2 ++ scala3
 
 excludeLintKeys in Global ++= Set(ideSkipProject)
@@ -15,7 +15,7 @@ lazy val commonSettings = commonSmlBuildSettings ++ ossPublishSettings ++ Seq(
   fork := true
 )
 
-val tapirVersion = "1.1.1"
+val tapirVersion = "1.1.4"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.2.14" % Test
 
 lazy val rootProject = (project in file("."))
@@ -42,7 +42,7 @@ lazy val nima = (projectMatrix in file("nima"))
     libraryDependencies ++= Seq(
       "com.softwaremill.sttp.tapir" %% "tapir-server" % tapirVersion,
       "com.softwaremill.sttp.tapir" %% "tapir-server-tests" % tapirVersion % Test,
-      "io.helidon.nima.webserver" % "helidon-nima-webserver" % "4.0.0-ALPHA1",
+      "io.helidon.nima.webserver" % "helidon-nima-webserver" % "4.0.0-ALPHA2",
       scalaTest
     )
   )
