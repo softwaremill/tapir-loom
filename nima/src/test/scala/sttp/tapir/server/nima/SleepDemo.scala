@@ -9,6 +9,13 @@ object SleepDemo extends App {
     "hello, world!"
   }
   val h = NimaServerInterpreter().toHandler(List(e))
-  WebServer.builder().routing(_.any(h)).port(8080).start()
+  WebServer
+    .builder()
+    .routing { builder =>
+      builder.any(h)
+      ()
+    }
+    .port(8080)
+    .start()
   println("Started")
 }

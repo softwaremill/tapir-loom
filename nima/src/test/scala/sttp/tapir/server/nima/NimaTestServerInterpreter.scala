@@ -25,7 +25,9 @@ class NimaTestServerInterpreter() extends TestServerInterpreter[Id, Any, NimaSer
     }
 
     Resource
-      .make(bind)(binding => IO.blocking(binding.stop()))
+      .make(bind) { binding =>
+        IO.blocking(binding.stop()).map(_ => ())
+      }
       .map(b => b.port)
   }
 }
