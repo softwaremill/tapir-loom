@@ -53,7 +53,8 @@ trait NimaServerInterpreter {
           }
 
         case RequestResult.Failure(_) =>
-          val ignore = helidonResponse.next()
+          helidonResponse.next()
+          ()
       }
     }
   }

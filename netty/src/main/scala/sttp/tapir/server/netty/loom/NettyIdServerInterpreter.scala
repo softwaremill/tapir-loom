@@ -15,7 +15,10 @@ trait NettyIdServerInterpreter {
       nettyServerOptions.createFile,
       nettyServerOptions.deleteFile,
       new RunAsync[Id] {
-        override def apply[T](f: => Id[T]): Unit = f
+        override def apply[T](f: => Id[T]): Unit = {
+          f
+          ()
+        }
       }
     )
   }
