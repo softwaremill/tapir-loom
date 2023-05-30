@@ -41,18 +41,21 @@ trait NimaServerInterpreter {
             helidonResponse.header(name, headers.map(_.value): _*)
           }
           log.debug("toHandler: streaming body")
+          log.debug(s"toHandler: tapirResponse: $tapirResponse")
 
           tapirResponse.body.fold {
-            log.debug("toHandler: streaming body - EMPTY")
+            log.debug("toHandler: streaming body: empty")
             helidonResponse.send()
           } { tapirInputStream =>
+            log.debug("toHandler: streaming body: stream")
             val helidonOutputStream = helidonResponse.outputStream()
             tapirInputStream.transferTo(helidonOutputStream)
             log.debug("toHandler: streaming close")
             helidonOutputStream.close()
           }
 
-        case RequestResult.Failure(_) =>
+        case r@RequestResult.Failure(_) =>
+          log.debug(s"toHandler: RequestResult.Failure: ", r)
           helidonResponse.next()
           ()
       }

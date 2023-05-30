@@ -8,10 +8,10 @@
         </layout>
     </appender>
 
-    <logger name="io.helidon" level="INFO" additivity="false">
+    <logger name="io.helidon" level="info" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
-    <logger name="sttp.tapir.server.nima" level="INFO" additivity="false">
+    <logger name="sttp.tapir.server.nima" level="info" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
 
