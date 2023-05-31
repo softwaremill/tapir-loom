@@ -9,7 +9,6 @@ import scala.util.{Success, Try}
 
 private[nima] class NimaBodyListener(res: JavaNimaServerResponse) extends BodyListener[Id, InputStream] {
   override def onComplete(body: InputStream)(cb: Try[Unit] => Unit): InputStream = {
-//    println("nima: onComplete")
     res.whenSent(() => cb(Success(())))
     body
   }

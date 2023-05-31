@@ -10,13 +10,11 @@ import java.net.{InetSocketAddress, SocketAddress}
 import scala.jdk.CollectionConverters.IterableHasAsScala
 
 private[nima] case class NimaServerRequest(r: JavaNimaServerRequest, attributes: AttributeMap = AttributeMap.Empty) extends ServerRequest {
-//  println(s"NimaServerRequest: PATH: ${r.path()}")
   override def protocol: String = r.prologue().protocol()
   override def connectionInfo: ConnectionInfo =
     ConnectionInfo(toInetSocketAddress(r.localPeer().address()), toInetSocketAddress(r.remotePeer().address()), Some(r.isSecure))
   override def underlying: Any = r
   override def pathSegments: List[String] = uri.pathSegments.segments.map(_.v).filter(_.nonEmpty).toList
-//  println(s"NimaServerRequest: PATH: Segments ${pathSegments}")
   override def queryParameters: QueryParams = uri.params
   override def method: Method = Method.unsafeApply(r.prologue().method().text())
 

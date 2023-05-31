@@ -15,8 +15,6 @@ class NimaServerTest extends TestSuite with EitherValues {
           val interpreter = new NimaTestServerInterpreter()
           val createServerTest = new DefaultCreateServerTest(backend, interpreter)
 
-//          new ServerBasicTestsLocal(createServerTest, interpreter, invulnerableToUnsanitizedHeaders = false).tests()
-
           new ServerBasicTests(createServerTest, interpreter, invulnerableToUnsanitizedHeaders = false).tests() ++
             new AllServerTests(createServerTest, interpreter, backend, basic = false, multipart = false).tests()
         })
