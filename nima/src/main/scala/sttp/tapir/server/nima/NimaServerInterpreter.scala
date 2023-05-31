@@ -38,6 +38,7 @@ trait NimaServerInterpreter {
           log.debug(s"toHandler: RequestResult.Response: $tapirResponse")
           helidonResponse.status(Http.Status.create(tapirResponse.code.code))
           tapirResponse.headers.groupBy(_.name).foreach { case (name, headers) =>
+            log.debug(s"toHandler: RequestResult.Response: header: $name [${headers.map(_.value)}]")
             helidonResponse.header(name, headers.map(_.value): _*)
           }
           log.debug("toHandler: streaming body")
@@ -47,8 +48,9 @@ trait NimaServerInterpreter {
             log.debug("toHandler: streaming body: empty")
             helidonResponse.send()
           } { tapirInputStream =>
-            log.debug("toHandler: streaming body: stream")
+            log.debug("toHandler: streaming body: stream creation")
             val helidonOutputStream = helidonResponse.outputStream()
+            log.debug("toHandler: streaming body: stream transfer")
             tapirInputStream.transferTo(helidonOutputStream)
             log.debug("toHandler: streaming close")
             helidonOutputStream.close()

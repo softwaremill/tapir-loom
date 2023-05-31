@@ -30,6 +30,7 @@ private[nima] case class NimaServerRequest(r: JavaNimaServerRequest, attributes:
     Uri.unsafeParse(s"$protocol://$authority$path$query$fragment")
   }
 
+  println(s"NimaServerRequest: headers: ${r.headers()}")
   override def headers: Seq[Header] = r.headers().asScala.toSeq.flatMap(hv => hv.allValues().asScala.map(v => Header(hv.name(), v)))
   override def attribute[T](k: AttributeKey[T]): Option[T] = attributes.get(k)
   override def attribute[T](k: AttributeKey[T], v: T): NimaServerRequest = copy(attributes = attributes.put(k, v))
