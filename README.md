@@ -32,3 +32,7 @@ object SleepDemo extends App {
   NettyIdServer().addEndpoint(e).start()
 }
 ```
+
+An example can be found in `nima/src/test/scala/sttp/tapir/server/nima/SleepDemo.scala`, which can be started with `nima/Test/run`.
+
+To enable debug logs for tests, adjust `nima/src/test/resources/logback.xml`.
