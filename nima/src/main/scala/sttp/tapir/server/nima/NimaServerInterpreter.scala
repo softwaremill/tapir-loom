@@ -38,15 +38,17 @@ trait NimaServerInterpreter {
             helidonResponse.header(name, headers.map(_.value): _*)
           }
 
-          tapirResponse.body.fold {
-            helidonResponse.send()
-          } { tapirInputStream =>
+          tapirResponse.body.fold(ifEmpty = helidonResponse.send()) { tapirInputStream =>
             val helidonOutputStream = helidonResponse.outputStream()
-            tapirInputStream.transferTo(helidonOutputStream)
-            helidonOutputStream.close()
+            try {
+              tapirInputStream.transferTo(helidonOutputStream)
+            } finally {
+              helidonOutputStream.close()
+            }
           }
 
-        case r @ RequestResult.Failure(_) =>
+        // in Nima, endpoints are attempted to be decoded individually; if this endpoint didn't match - another one might
+        case RequestResult.Failure(_) =>
           helidonResponse.next()
           ()
       }
