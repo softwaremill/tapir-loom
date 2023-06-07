@@ -15,7 +15,7 @@ lazy val commonSettings = commonSmlBuildSettings ++ ossPublishSettings ++ Seq(
   fork := true
 )
 
-val tapirVersion = "1.3.0"
+val tapirVersion = "1.5.1"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.2.16" % Test
 
 lazy val rootProject = (project in file("."))
@@ -45,12 +45,12 @@ lazy val nima = (projectMatrix in file("nima"))
       "com.softwaremill.sttp.tapir" %% "tapir-server-tests" % tapirVersion % Test,
       "io.helidon.nima.webserver" % "helidon-nima-webserver" % helidonVersion,
       scalaTest
-    ) ++ loggerDependencies
+    ) ++ loggerDependencies.map(_ % Test)
   )
   .jvmPlatform(scalaVersions = scalaAll)
 
 lazy val loggerDependencies = Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
   "ch.qos.logback" % "logback-classic" % "1.4.7",
-  "io.helidon.logging" % "helidon-logging-slf4j" % helidonVersion, // to see logs from helidon
+  "io.helidon.logging" % "helidon-logging-slf4j" % helidonVersion // to see logs from helidon
 )

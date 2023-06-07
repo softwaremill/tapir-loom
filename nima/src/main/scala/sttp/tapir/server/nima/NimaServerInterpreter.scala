@@ -1,6 +1,5 @@
 package sttp.tapir.server.nima
 
-import com.typesafe.scalalogging.Logger
 import io.helidon.common.http.Http
 import io.helidon.nima.webserver.http.{Handler, ServerRequest => HelidonServerRequest, ServerResponse => HelidonServerResponse}
 import sttp.tapir.capabilities.NoStreams
@@ -13,7 +12,6 @@ import sttp.tapir.server.nima.internal.{NimaBodyListener, NimaRequestBody, NimaS
 import java.io.InputStream
 
 trait NimaServerInterpreter {
-  val log = Logger(getClass.getName)
   def nimaServerOptions: NimaServerOptions
 
   def toHandler(ses: List[ServerEndpoint[Any, Id]]): Handler = {
@@ -35,27 +33,20 @@ trait NimaServerInterpreter {
 
       serverInterpreter(NimaServerRequest(helidonRequest)) match {
         case RequestResult.Response(tapirResponse) =>
-          log.debug(s"toHandler: RequestResult.Response: $tapirResponse")
           helidonResponse.status(Http.Status.create(tapirResponse.code.code))
           tapirResponse.headers.groupBy(_.name).foreach { case (name, headers) =>
             helidonResponse.header(name, headers.map(_.value): _*)
           }
-          log.debug("toHandler: streaming body")
-          log.debug(s"toHandler: tapirResponse: $tapirResponse")
 
           tapirResponse.body.fold {
-            log.debug("toHandler: streaming body: empty")
             helidonResponse.send()
           } { tapirInputStream =>
-            log.debug("toHandler: streaming body: stream")
             val helidonOutputStream = helidonResponse.outputStream()
             tapirInputStream.transferTo(helidonOutputStream)
-            log.debug("toHandler: streaming close")
             helidonOutputStream.close()
           }
 
-        case r@RequestResult.Failure(_) =>
-          log.debug(s"toHandler: RequestResult.Failure: ", r)
+        case r @ RequestResult.Failure(_) =>
           helidonResponse.next()
           ()
       }
