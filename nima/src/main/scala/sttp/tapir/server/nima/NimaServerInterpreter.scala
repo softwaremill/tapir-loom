@@ -47,7 +47,7 @@ trait NimaServerInterpreter {
             }
           }
 
-        // in Nima, endpoints are attempted to be decoded individually; if this endpoint didn't match - another one might
+        // If endpoint matching fails, we return control to Nima
         case RequestResult.Failure(_) =>
           helidonResponse.next()
           ()
