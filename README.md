@@ -13,9 +13,9 @@ Try running [SleepDemo](https://github.com/softwaremill/tapir-loom/blob/master/n
 To use, add one of the following dependencies:
 
 ```scala
-"com.softwaremill.sttp.tapir" %% "tapir-netty-server-id" % "0.1.1"
+"com.softwaremill.sttp.tapir" %% "tapir-netty-server-id" % "0.2.0"
 // or
-"com.softwaremill.sttp.tapir" %% "tapir-nima-server" % "0.1.1"
+"com.softwaremill.sttp.tapir" %% "tapir-nima-server" % "0.2.0"
 ```
 
 Then, use `NimaServerInterpreter` or the `NettyIdServer` as other [netty server](https://tapir.softwaremill.com/en/latest/server/netty.html) variants.
