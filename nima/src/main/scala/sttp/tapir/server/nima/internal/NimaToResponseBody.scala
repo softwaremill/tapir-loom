@@ -11,6 +11,7 @@ import java.nio.ByteBuffer
 import java.nio.charset.Charset
 
 private[nima] class NimaToResponseBody extends ToResponseBody[InputStream, NoStreams] {
+
   override val streams: capabilities.Streams[NoStreams] = NoStreams
 
   override def fromRawValue[R](v: R, headers: HasHeaders, format: CodecFormat, bodyType: RawBodyType[R]): InputStream = {
@@ -19,6 +20,13 @@ private[nima] class NimaToResponseBody extends ToResponseBody[InputStream, NoStr
       case RawBodyType.ByteArrayBody       => new ByteArrayInputStream(v)
       case RawBodyType.ByteBufferBody      => new ByteBufferBackedInputStream(v)
       case RawBodyType.InputStreamBody     => v
+      case rr @ RawBodyType.InputStreamRangeBody =>
+        val base = v.inputStreamFromRangeStart()
+        v.range.flatMap(_.startAndEnd) match {
+          case Some((start, end)) =>
+            new LimitedInputStream(base, end - start)
+          case None => base
+        }
       case RawBodyType.FileBody =>
         val base = new FileInputStream(v.file)
         v.range.flatMap(_.startAndEnd) match {

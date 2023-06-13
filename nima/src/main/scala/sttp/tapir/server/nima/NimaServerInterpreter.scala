@@ -1,13 +1,13 @@
 package sttp.tapir.server.nima
 
 import io.helidon.common.http.Http
-import io.helidon.nima.webserver.http.{Handler, ServerRequest, ServerResponse}
+import io.helidon.nima.webserver.http.{Handler, ServerRequest => HelidonServerRequest, ServerResponse => HelidonServerResponse}
 import sttp.tapir.capabilities.NoStreams
 import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.server.interceptor.RequestResult
 import sttp.tapir.server.interceptor.reject.RejectInterceptor
 import sttp.tapir.server.interpreter.{BodyListener, FilterServerEndpoints, ServerInterpreter}
-import sttp.tapir.server.nima.internal.{idMonad, NimaBodyListener, NimaRequestBody, NimaServerRequest, NimaToResponseBody}
+import sttp.tapir.server.nima.internal.{NimaBodyListener, NimaRequestBody, NimaServerRequest, NimaToResponseBody, idMonad}
 
 import java.io.InputStream
 
@@ -20,8 +20,8 @@ trait NimaServerInterpreter {
     val responseBody = new NimaToResponseBody
     val interceptors = RejectInterceptor.disableWhenSingleEndpoint(nimaServerOptions.interceptors, ses)
 
-    (req: ServerRequest, res: ServerResponse) => {
-      implicit val bodyListener: BodyListener[Id, InputStream] = new NimaBodyListener(res)
+    (helidonRequest: HelidonServerRequest, helidonResponse: HelidonServerResponse) => {
+      implicit val bodyListener: BodyListener[Id, InputStream] = new NimaBodyListener(helidonResponse)
 
       val serverInterpreter = new ServerInterpreter[Any, Id, InputStream, NoStreams](
         filteredEndpoints,
@@ -31,20 +31,26 @@ trait NimaServerInterpreter {
         nimaServerOptions.deleteFile
       )
 
-      serverInterpreter(NimaServerRequest(req)) match {
-        case RequestResult.Response(response) =>
-          res.status(Http.Status.create(response.code.code))
-          response.headers.groupBy(_.name).foreach { case (name, headers) =>
-            res.header(name, headers.map(_.value): _*)
-          }
-          response.body.foreach { is =>
-            val os = res.outputStream()
-            is.transferTo(os)
-            os.close()
+      serverInterpreter(NimaServerRequest(helidonRequest)) match {
+        case RequestResult.Response(tapirResponse) =>
+          helidonResponse.status(Http.Status.create(tapirResponse.code.code))
+          tapirResponse.headers.groupBy(_.name).foreach { case (name, headers) =>
+            helidonResponse.header(name, headers.map(_.value): _*)
           }
 
+          tapirResponse.body.fold(ifEmpty = helidonResponse.send()) { tapirInputStream =>
+            val helidonOutputStream = helidonResponse.outputStream()
+            try {
+              tapirInputStream.transferTo(helidonOutputStream)
+            } finally {
+              helidonOutputStream.close()
+            }
+          }
+
+        // If endpoint matching fails, we return control to Nima
         case RequestResult.Failure(_) =>
-          val ignore = res.next()
+          helidonResponse.next()
+          ()
       }
     }
   }

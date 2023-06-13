@@ -13,9 +13,9 @@ class NimaServerTest extends TestSuite with EitherValues {
         .eval(IO.delay {
           val interpreter = new NimaTestServerInterpreter()
           val createServerTest = new DefaultCreateServerTest(backend, interpreter)
-
+          // TODO uncomment static content tests when Nima starts to correctly support '*' in accept-encoding
           new ServerBasicTests(createServerTest, interpreter, invulnerableToUnsanitizedHeaders = false).tests() ++
-            new AllServerTests(createServerTest, interpreter, backend, basic = false, multipart = false).tests()
+            new AllServerTests(createServerTest, interpreter, backend, basic = false, multipart = false, staticContent = false).tests()
         })
     }
 }

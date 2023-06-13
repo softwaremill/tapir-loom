@@ -2,7 +2,7 @@ package sttp.tapir.server.nima.internal
 
 import io.helidon.nima.webserver.http.{ServerRequest => JavaNimaServerRequest}
 import sttp.capabilities
-import sttp.tapir.{FileRange, RawBodyType, TapirFile}
+import sttp.tapir.{FileRange, InputStreamRange, RawBodyType, TapirFile}
 import sttp.tapir.capabilities.NoStreams
 import sttp.tapir.model.ServerRequest
 import sttp.tapir.server.interpreter.{RawValue, RequestBody}
@@ -19,15 +19,16 @@ private[nima] class NimaRequestBody(createFile: ServerRequest => TapirFile) exte
     def asByteArray = asInputStream.readAllBytes()
 
     bodyType match {
-      case RawBodyType.StringBody(charset) => RawValue(new String(asByteArray, charset))
-      case RawBodyType.ByteArrayBody       => RawValue(asByteArray)
-      case RawBodyType.ByteBufferBody      => RawValue(ByteBuffer.wrap(asByteArray))
-      case RawBodyType.InputStreamBody     => RawValue(asInputStream)
+      case RawBodyType.StringBody(charset)  => RawValue(new String(asByteArray, charset))
+      case RawBodyType.ByteArrayBody        => RawValue(asByteArray)
+      case RawBodyType.ByteBufferBody       => RawValue(ByteBuffer.wrap(asByteArray))
+      case RawBodyType.InputStreamBody      => RawValue(asInputStream)
+      case RawBodyType.InputStreamRangeBody => RawValue(InputStreamRange(() => asInputStream))
       case RawBodyType.FileBody =>
         val file = createFile(serverRequest)
         Files.copy(asInputStream, file.toPath, StandardCopyOption.REPLACE_EXISTING)
         RawValue(FileRange(file), Seq(FileRange(file)))
-      case _: RawBodyType.MultipartBody => ???
+      case _: RawBodyType.MultipartBody => throw new UnsupportedOperationException("Multipart request body not supported")
     }
   }
 

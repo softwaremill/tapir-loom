@@ -9,7 +9,6 @@ import sttp.tapir.server.netty.internal.{NettyBootstrap, NettyServerHandler}
 import java.net.{InetSocketAddress, SocketAddress}
 import java.nio.file.Path
 import java.util.concurrent.Executors
-import scala.concurrent.Future
 
 case class NettyIdServer[SA <: SocketAddress](routes: Vector[IdRoute], options: NettyIdServerOptions[SA]) {
   private val executor = Executors.newVirtualThreadPerTaskExecutor()
@@ -53,7 +52,7 @@ case class NettyIdServer[SA <: SocketAddress](routes: Vector[IdRoute], options: 
           executor.submit(new Runnable {
             override def run(): Unit = f()
           })
-          Future.successful(())
+          ()
         }
       ),
       eventLoopGroup

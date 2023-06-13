@@ -14,18 +14,22 @@ class NimaTestServerInterpreter() extends TestServerInterpreter[Id, Any, NimaSer
     NimaServerInterpreter(serverOptions).toHandler(es)
   }
 
-  override def server(routes: NonEmptyList[Handler]): Resource[IO, Port] = {
+  override def server(nimaRoutes: NonEmptyList[Handler]): Resource[IO, Port] = {
     val bind = IO.blocking {
       WebServer
         .builder()
-        .routing { (b: HttpRouting.Builder) =>
-          routes.iterator.foreach(b.any)
+        .routing { (builder: HttpRouting.Builder) =>
+          nimaRoutes
+            .iterator
+            .foreach(nimaHandler => builder.any(nimaHandler))
         }
         .start()
     }
 
     Resource
-      .make(bind)(binding => IO.blocking(binding.stop()))
+      .make(bind) { binding =>
+        IO.blocking(binding.stop()).map(_ => ())
+      }
       .map(b => b.port)
   }
 }
