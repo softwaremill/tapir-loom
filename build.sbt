@@ -51,6 +51,6 @@ lazy val nima = (projectMatrix in file("nima"))
 
 lazy val loggerDependencies = Seq(
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5",
-  "ch.qos.logback" % "logback-classic" % "1.4.7",
+  "ch.qos.logback" % "logback-classic" % "1.4.8",
   "io.helidon.logging" % "helidon-logging-slf4j" % helidonVersion // to see logs from helidon
 )
