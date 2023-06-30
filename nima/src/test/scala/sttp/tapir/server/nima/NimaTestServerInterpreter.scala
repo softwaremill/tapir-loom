@@ -19,8 +19,7 @@ class NimaTestServerInterpreter() extends TestServerInterpreter[Id, Any, NimaSer
       WebServer
         .builder()
         .routing { (builder: HttpRouting.Builder) =>
-          nimaRoutes
-            .iterator
+          nimaRoutes.iterator
             .foreach(nimaHandler => builder.any(nimaHandler))
         }
         .start()
