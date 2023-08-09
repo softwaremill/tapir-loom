@@ -22,6 +22,7 @@ class NimaTestServerInterpreter() extends TestServerInterpreter[Id, Any, NimaSer
           nimaRoutes.iterator
             .foreach(nimaHandler => builder.any(nimaHandler))
         }
+        .build()
         .start()
     }
 
