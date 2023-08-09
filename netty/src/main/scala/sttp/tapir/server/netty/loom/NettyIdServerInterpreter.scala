@@ -4,7 +4,7 @@ import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.server.netty.internal.{NettyServerInterpreter, RunAsync}
 
 trait NettyIdServerInterpreter {
-  def nettyServerOptions: NettyIdServerOptions[_]
+  def nettyServerOptions: NettyIdServerOptions
 
   def toRoute(
       ses: List[ServerEndpoint[Any, Id]]
@@ -25,9 +25,9 @@ trait NettyIdServerInterpreter {
 }
 
 object NettyIdServerInterpreter {
-  def apply(serverOptions: NettyIdServerOptions[_] = NettyIdServerOptions.default): NettyIdServerInterpreter = {
+  def apply(serverOptions: NettyIdServerOptions = NettyIdServerOptions.default): NettyIdServerInterpreter = {
     new NettyIdServerInterpreter {
-      override def nettyServerOptions: NettyIdServerOptions[_] = serverOptions
+      override def nettyServerOptions: NettyIdServerOptions = serverOptions
     }
   }
 }
