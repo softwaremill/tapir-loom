@@ -16,6 +16,7 @@ object SleepDemo extends App {
       ()
     }
     .port(8080)
+    .build()
     .start()
   println("Started")
 }

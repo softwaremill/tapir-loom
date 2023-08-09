@@ -6,7 +6,7 @@ Requires Java 20, and the `--enable-preview` java option to be provided.
 
 There are currently two server interpreters available:
 * one using [Netty](https://netty.io), running the server logic on virtual threads
-* and one using an alpha release of [Helidon Nima 4 ](https://medium.com/helidon/helidon-n%C3%ADma-helidon-on-virtual-threads-130bb2ea2088)
+* and one using a pre-release of [Helidon Nima 4 ](https://medium.com/helidon/helidon-n%C3%ADma-helidon-on-virtual-threads-130bb2ea2088)
 
 Try running [SleepDemo](https://github.com/softwaremill/tapir-loom/blob/master/nima/src/test/scala/sttp/tapir/server/nima/SleepDemo.scala) with some load: `wrk -c 100 http://localhost:8080/hello`.
 
