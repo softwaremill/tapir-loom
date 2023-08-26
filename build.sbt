@@ -15,7 +15,7 @@ lazy val commonSettings = commonSmlBuildSettings ++ ossPublishSettings ++ Seq(
   fork := true
 )
 
-val tapirVersion = "1.6.4"
+val tapirVersion = "1.7.3"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.2.16" % Test
 
 lazy val rootProject = (project in file("."))
