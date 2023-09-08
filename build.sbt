@@ -3,7 +3,7 @@ import com.softwaremill.Publish.ossPublishSettings
 
 val scala2_13 = "2.13.11"
 val scala2 = List(scala2_13)
-val scala3 = List("3.3.0")
+val scala3 = List("3.3.1")
 val scalaAll = scala2 ++ scala3
 
 excludeLintKeys in Global ++= Set(ideSkipProject)
