@@ -15,11 +15,12 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - name: Set up JDK 20
-      uses: oracle-actions/setup-java@v1
+    - name: Set up JDK
+      uses: actions/setup-java@v3
       with:
-        website: jdk.java.net
-        release: 20
+        distribution: 'zulu'
+        java-version: '21'
+        cache: 'sbt'
     - name: Cache sbt
       uses: actions/cache@v2
       with:
@@ -48,11 +49,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Set up JDK 20
-        uses: oracle-actions/setup-java@v1
+      - name: Set up JDK
+        uses: actions/setup-java@v3
         with:
-          website: jdk.java.net
-          release: 20
+          distribution: 'zulu'
+          java-version: '21'
+          cache: 'sbt'
       - name: Compile
         run: sbt compile
       - name: Publish artifacts

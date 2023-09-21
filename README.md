@@ -2,7 +2,7 @@
 
 [tapir](https://tapir.softwaremill.com/en/latest/) + [loom](https://openjdk.org/projects/loom/) integration.
 
-Requires Java 20, and the `--enable-preview` java option to be provided.
+Requires Java 21.
 
 There are currently two server interpreters available:
 * one using [Netty](https://netty.io), running the server logic on virtual threads

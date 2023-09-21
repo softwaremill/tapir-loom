@@ -1,7 +1,7 @@
 package sttp.tapir.server.nima
 
-import io.helidon.common.http.Http
-import io.helidon.nima.webserver.http.{Handler, ServerRequest => HelidonServerRequest, ServerResponse => HelidonServerResponse}
+import io.helidon.http.Http
+import io.helidon.webserver.http.{Handler, ServerRequest => HelidonServerRequest, ServerResponse => HelidonServerResponse}
 import sttp.tapir.capabilities.NoStreams
 import sttp.tapir.server.ServerEndpoint
 import sttp.tapir.server.interceptor.RequestResult

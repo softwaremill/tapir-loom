@@ -1,6 +1,6 @@
 package sttp.tapir.server.nima
 
-import io.helidon.nima.webserver.WebServer
+import io.helidon.webserver.WebServer
 import sttp.tapir._
 
 object SleepDemo extends App {

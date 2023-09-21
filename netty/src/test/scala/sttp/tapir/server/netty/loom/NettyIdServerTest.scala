@@ -7,6 +7,8 @@ import sttp.tapir.server.netty.internal.FutureUtil.nettyFutureToScala
 import sttp.tapir.server.tests._
 import sttp.tapir.tests.{Test, TestSuite}
 
+import scala.concurrent.Future
+
 class NettyIdServerTest extends TestSuite with EitherValues {
   override def tests: Resource[IO, List[Test]] =
     backendResource.flatMap { backend =>
@@ -21,7 +23,7 @@ class NettyIdServerTest extends TestSuite with EitherValues {
 
           (tests, eventLoopGroup)
         }) { case (_, eventLoopGroup) =>
-          IO.fromFuture(IO.delay(nettyFutureToScala(eventLoopGroup.shutdownGracefully()))).void
+          IO.fromFuture(IO.delay(nettyFutureToScala(eventLoopGroup.shutdownGracefully()): Future[_])).void
         }
         .map { case (tests, _) => tests }
     }

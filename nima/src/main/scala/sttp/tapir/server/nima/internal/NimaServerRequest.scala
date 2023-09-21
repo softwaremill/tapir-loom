@@ -1,6 +1,6 @@
 package sttp.tapir.server.nima.internal
 
-import io.helidon.nima.webserver.http.{ServerRequest => JavaNimaServerRequest}
+import io.helidon.webserver.http.{ServerRequest => JavaNimaServerRequest}
 import sttp.model.{Header, Method, QueryParams, Uri}
 import sttp.tapir.{AttributeKey, AttributeMap}
 import sttp.tapir.model.{ConnectionInfo, ServerRequest}
