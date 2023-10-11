@@ -1,6 +1,6 @@
 package sttp.tapir.server.nima
 
-import io.helidon.http.Http
+import io.helidon.http.Status
 import io.helidon.webserver.http.{Handler, ServerRequest => HelidonServerRequest, ServerResponse => HelidonServerResponse}
 import sttp.tapir.capabilities.NoStreams
 import sttp.tapir.server.ServerEndpoint
@@ -33,7 +33,7 @@ trait NimaServerInterpreter {
 
       serverInterpreter(NimaServerRequest(helidonRequest)) match {
         case RequestResult.Response(tapirResponse) =>
-          helidonResponse.status(Http.Status.create(tapirResponse.code.code))
+          helidonResponse.status(Status.create(tapirResponse.code.code))
           tapirResponse.headers.groupBy(_.name).foreach { case (name, headers) =>
             helidonResponse.header(name, headers.map(_.value): _*)
           }
