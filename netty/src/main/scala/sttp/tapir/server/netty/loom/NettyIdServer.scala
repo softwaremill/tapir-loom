@@ -33,17 +33,19 @@ case class NettyIdServer(routes: Vector[IdRoute], options: NettyIdServerOptions,
 
   def port(p: Int): NettyIdServer = modifyConfig(_.port(p))
 
- def start(): NettyIdServerBinding =
-    startUsingSocketOverride[InetSocketAddress](None) match { case (socket, stop) =>
-      NettyIdServerBinding(socket, stop)
-    } 
+  def start(): NettyIdServerBinding =
+    startUsingSocketOverride[InetSocketAddress](None) match {
+      case (socket, stop) =>
+        NettyIdServerBinding(socket, stop)
+    }
 
- def startUsingDomainSocket(path: Option[Path] = None): NettyIdDomainSocketBinding =
+  def startUsingDomainSocket(path: Option[Path] = None): NettyIdDomainSocketBinding =
     startUsingDomainSocket(path.getOrElse(Paths.get(System.getProperty("java.io.tmpdir"), UUID.randomUUID().toString)))
 
   def startUsingDomainSocket(path: Path): NettyIdDomainSocketBinding =
-    startUsingSocketOverride(Some(new DomainSocketAddress(path.toFile))) match { case (socket, stop) =>
-      NettyIdDomainSocketBinding(socket, stop)
+    startUsingSocketOverride(Some(new DomainSocketAddress(path.toFile))) match {
+      case (socket, stop) =>
+        NettyIdDomainSocketBinding(socket, stop)
     }
 
   private def startUsingSocketOverride[SA <: SocketAddress](socketOverride: Option[SA]): (SA, () => Unit) = {
@@ -87,10 +89,10 @@ object NettyIdServer {
 
   def apply(serverOptions: NettyIdServerOptions): NettyIdServer =
     NettyIdServer(Vector.empty, serverOptions, NettyConfig.defaultNoStreaming)
-  
+
   def apply(config: NettyConfig): NettyIdServer =
     NettyIdServer(Vector.empty, NettyIdServerOptions.default, config)
-  
+
   def apply(serverOptions: NettyIdServerOptions, config: NettyConfig): NettyIdServer =
     NettyIdServer(Vector.empty, serverOptions, config)
 }
