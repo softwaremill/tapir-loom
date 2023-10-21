@@ -35,7 +35,7 @@ lazy val netty = (projectMatrix in file("netty"))
   )
   .jvmPlatform(scalaVersions = scalaAll)
 
-lazy val helidonVersion = "4.0.0-RC1"
+lazy val helidonVersion = "4.0.0-RC2"
 lazy val nima = (projectMatrix in file("nima"))
   .settings(commonSettings: _*)
   .settings(
