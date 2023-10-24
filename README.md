@@ -6,13 +6,13 @@ Requires Java 21.
 
 There are currently two server interpreters available:
 * one using [Netty](https://netty.io), running the server logic on virtual threads
-* and one using a pre-release of [Helidon Nima 4 ](https://medium.com/helidon/helidon-n%C3%ADma-helidon-on-virtual-threads-130bb2ea2088)
+* and one using [Helidon Nima 4](https://helidon.io/nima)
 
 Try running [SleepDemo](https://github.com/softwaremill/tapir-loom/blob/master/nima/src/test/scala/sttp/tapir/server/nima/SleepDemo.scala) with some load: `wrk -c 100 http://localhost:8080/hello`.
 
 To use, add one of the following dependencies:
 
-```scala
+```scala<Up>
 "com.softwaremill.sttp.tapir" %% "tapir-netty-server-id" % "0.2.4"
 // or
 "com.softwaremill.sttp.tapir" %% "tapir-nima-server" % "0.2.4"
