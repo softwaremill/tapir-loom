@@ -1,16 +1,26 @@
 package sttp.tapir.server.netty.loom
 
-import io.netty.channel.{Channel, EventLoopGroup}
+import io.netty.channel.Channel
+import io.netty.channel.EventLoopGroup
 import io.netty.channel.unix.DomainSocketAddress
 import sttp.tapir.server.ServerEndpoint
+import sttp.tapir.server.model.ServerResponse
+import sttp.tapir.server.netty.NettyConfig
+import sttp.tapir.server.netty.NettyResponse
 import sttp.tapir.server.netty.Route
-import sttp.tapir.server.netty.internal.{NettyBootstrap, NettyServerHandler}
+import sttp.tapir.server.netty.internal.NettyBootstrap
+import sttp.tapir.server.netty.internal.NettyServerHandler
 
-import java.net.{InetSocketAddress, SocketAddress}
-import java.nio.file.{Path, Paths}
+import java.net.InetSocketAddress
+import java.net.SocketAddress
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.UUID
 import java.util.concurrent.Executors
-import sttp.tapir.server.netty.NettyConfig
+import java.util.concurrent.{Future => JFuture}
+import scala.concurrent.Future
+import scala.concurrent.Promise
+import scala.util.control.NonFatal
 
 case class NettyIdServer(routes: Vector[IdRoute], options: NettyIdServerOptions, config: NettyConfig) {
   private val executor = Executors.newVirtualThreadPerTaskExecutor()
@@ -52,16 +62,33 @@ case class NettyIdServer(routes: Vector[IdRoute], options: NettyIdServerOptions,
     val eventLoopGroup = config.eventLoopConfig.initEventLoopGroup()
     val route = Route.combine(routes)
 
+    def unsafeRunF(
+        callToExecute: () => Id[ServerResponse[NettyResponse]]
+    ): (Future[ServerResponse[NettyResponse]], () => Future[Unit]) = {
+      val scalaPromise = Promise[ServerResponse[NettyResponse]]()
+      val jFuture: JFuture[?] = executor.submit(new Runnable {
+        override def run(): Unit = try {
+          val result = callToExecute()
+          scalaPromise.success(result)
+        }
+        catch {
+          case NonFatal(e) => scalaPromise.failure(e)
+        }
+      })
+      
+      (
+        scalaPromise.future,
+        () => {
+          jFuture.cancel(true)
+          Future.unit
+        }
+      )
+    }
     val channelIdFuture = NettyBootstrap(
       config,
       new NettyServerHandler(
         route,
-        (f: () => Id[Unit]) => {
-          executor.submit(new Runnable {
-            override def run(): Unit = f()
-          })
-          ()
-        },
+        unsafeRunF,
         config.maxContentLength
       ),
       eventLoopGroup,
