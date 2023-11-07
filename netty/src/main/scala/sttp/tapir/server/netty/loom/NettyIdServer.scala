@@ -1,21 +1,24 @@
 package sttp.tapir.server.netty.loom
 
-import io.netty.channel.{Channel, EventLoopGroup}
+import io.netty.channel.Channel
+import io.netty.channel.EventLoopGroup
 import io.netty.channel.unix.DomainSocketAddress
 import sttp.tapir.server.ServerEndpoint
+import sttp.tapir.server.model.ServerResponse
+import sttp.tapir.server.netty.NettyConfig
+import sttp.tapir.server.netty.NettyResponse
 import sttp.tapir.server.netty.Route
-import sttp.tapir.server.netty.internal.{NettyBootstrap, NettyServerHandler}
-import sttp.tapir.server.netty.{NettyResponse, NettyServerRequest, Route}
+import sttp.tapir.server.netty.internal.NettyBootstrap
+import sttp.tapir.server.netty.internal.NettyServerHandler
 
-import java.net.{InetSocketAddress, SocketAddress}
-import java.nio.file.{Path, Paths}
+import java.net.InetSocketAddress
+import java.net.SocketAddress
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.UUID
 import java.util.concurrent.Executors
-import sttp.tapir.server.netty.NettyConfig
+import java.util.concurrent.{Future => JFuture}
 import scala.concurrent.Future
-import sttp.tapir.server.model.ServerResponse
-import java.util.concurrent.{Callable, Future => JFuture}
-import scala.jdk.FutureConverters._
 import scala.concurrent.Promise
 import scala.util.control.NonFatal
 
