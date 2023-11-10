@@ -1,5 +1,11 @@
 # tapir-loom
 
+## Servers moved to Tapir main repo ⚠️
+This repository is now archived. Since Tapir 1.9.0, loom-based backends are migrated to the main Tapir repository:
+* [tapir-netty-loom](https://tapir.softwaremill.com/en/latest/server/netty.html)
+* [tapir-nima-server](https://tapir.softwaremill.com/en/latest/server/nima.html)
+---
+
 [tapir](https://tapir.softwaremill.com/en/latest/) + [loom](https://openjdk.org/projects/loom/) integration.
 
 Requires Java 21.
